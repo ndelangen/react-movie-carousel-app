@@ -1,0 +1,18 @@
+.root {
+	background: #222;
+	padding: 10px;
+}
+.title {
+	display: block;
+
+	font-size: 30px;
+	color: #eee;
+	text-align: center;
+}
+.subtitle {
+	display: block;
+
+	font-size: 20px;
+	color: #bbb;
+	text-align: center;
+}
