@@ -16,13 +16,14 @@ class Root extends Component {
 
 	render() {
 		const head = this.props.head;
-		
+
 		return (
 			<html>
 				<head>
 					{head.title.toComponent()}
 					{head.meta.toComponent()}
 					{head.link.toComponent()}
+					<link href={!process.env.NODE_ENV ? '/app.css' : '/app.min.css'} rel="stylesheet" />
 				</head>
 				<body>
 					<div id='root' dangerouslySetInnerHTML={{__html: this.props.content}} />
