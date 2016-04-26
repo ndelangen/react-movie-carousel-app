@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
+import { Link, browserHistory } from 'react-router';
 import Card from '../../02-molecules/card/main';
 
 import styles from './main.css';
 
+const gotoItem = function (items, options) {
+
+	browserHistory.push('/sample');
+};
 
 const getDisplayedItems = function (items, options) {
 	const { activeIndex } = options;
