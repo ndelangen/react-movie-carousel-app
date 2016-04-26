@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import Header from '../components/04-scaffolds/header/main';
+
+import styles from './Root.css';
 
 class Root extends Component {
 
@@ -18,14 +21,16 @@ class Root extends Component {
 		const head = this.props.head;
 
 		return (
-			<html>
+			<html className={styles.html}>
 				<head>
 					{head.title.toComponent()}
 					{head.meta.toComponent()}
 					{head.link.toComponent()}
+					<link href='https://fonts.googleapis.com/css?family=Source+Serif+Pro' rel='stylesheet' type='text/css' />
 					<link href={!process.env.NODE_ENV ? '/app.css' : '/app.min.css'} rel="stylesheet" />
 				</head>
-				<body>
+				<body className={styles.body}>
+					<Header></Header>
 					<div id='root' dangerouslySetInnerHTML={{__html: this.props.content}} />
 					{this.renderEnvironment()}
 					{this.renderInitialState()}
