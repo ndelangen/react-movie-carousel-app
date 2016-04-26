@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import * as UsersActions from '../actions/movies';
+import * as MovieActions from '../actions/movies';
 import Carousel from '../components/03-modules/carousel/main';
 
 const isLoading = function (readyState) {
-	return (readyState === UsersActions.MOVIES_INVALID || readyState === UsersActions.MOVIES_FETCHING);
+	return (readyState === MovieActions.MOVIES_INVALID || readyState === MovieActions.MOVIES_FETCHING);
 };
 const isFailed = function (readyState) {
-	return (readyState === UsersActions.MOVIES_FETCH_FAILED);
+	return (readyState === MovieActions.MOVIES_FETCH_FAILED);
 };
 
 // @connect(state => { movies: state.movies })
@@ -17,7 +17,7 @@ class Home extends Component {
 
 	static readyOnActions(dispatch) {
 		return Promise.all([
-			dispatch(UsersActions.fetchIfNeeded())
+			dispatch(MovieActions.fetchIfNeeded())
 		]);
 	}
 
