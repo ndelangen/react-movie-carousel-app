@@ -26,6 +26,7 @@ class Home extends Component {
 	}
 	render() {
 		const { movies } = this.props;
+
 		return (
 			<div>
 				<Helmet title='Home' />
@@ -35,7 +36,7 @@ class Home extends Component {
 				) : isFailed(movies.readyState) ? (
 					<p>Failed to load content.</p>
 				) : (
-					<Carousel items={movies.list} path="/home" />
+					<Carousel items={movies.list} active={this.props.params.id} path="/home" />
 				)}
 			</div>
 		);
