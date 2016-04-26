@@ -11,6 +11,8 @@ const port = process.env.PORT || 3000;
 const server = express();
 global.__ENVIRONMENT__ = process.env.NODE_ENV || 'default';
 
+const appConfig = require('./app/config/' + global.__ENVIRONMENT__);
+
 // Otherwise errors thrown in Promise routines will be silently swallowed.
 // (e.g. any error during rendering the app server-side!)
 process.on('unhandledRejection', (reason, p) => {
@@ -53,5 +55,9 @@ server.listen(port, 'localhost', (err) => {
 	if (err) {
 		console.error(err);
 	}
-	console.info('==> 🌎 Listening on port %s. Open up http://localhost:%s/ in your browser.', port, port);
+	console.info('Server ready 👍. Open up http://localhost:%s/ in your browser.', port);
+	if (!process.env.NODE_ENV) {
+		console.info('---');
+		console.info('Webpack building...');
+	}
 });
