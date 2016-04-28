@@ -1,3 +1,65 @@
 .root {
-	background: whitesmoke;
+	position: absolute;;
+	overflow: hidden;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+.content {
+	z-index: 3;
+	position: absolute;
+	box-sizing: border-box;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	height: 140px;
+	padding: 20px;
+
+	color: currentColor;
+}
+.media {
+	z-index: 2;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 140px;
+	left: 0;
+}
+
+.background {
+	z-index: 1;
+	position: absolute;
+	top: -1px;
+	right: -1px;
+	bottom: -1px;
+	left: -1px;
+
+	background-color: rgb(50,50,50);
+
+	pointer-events: none;
+	will-change: background-color;
+	transition: background-color .6s linear;
+}
+
+
+.content * {
+	color: currentColor;
+}
+.title {
+	margin: 0;
+	padding: 0;
+}
+.rating {
+
+}
+.genre {
+
+}
+.group {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 20px;
 }
