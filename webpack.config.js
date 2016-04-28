@@ -27,6 +27,7 @@ module.exports = {
 		loaders: [
 			{
 				test: /\.css$/,
+				include: path.join(__dirname, 'app'),
 				loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]')
 			},
 			{
