@@ -1,10 +1,12 @@
 .root {
 	position: relative;
 	overflow: hidden;
-	overflow-x: auto;
 
 	width: 100%;
 	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .list {
 	position: relative;
@@ -14,55 +16,92 @@
 	margin: 0;
 
 	width: 100%;
-	height: 100%;
+	max-width: 500px;
+	height: 0;
+	margin-top: -480px;
 }
+
+.tool {
+	z-index: 9;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+
+	width: 15%;
+	min-width: 50px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	background: linear-gradient(to left, rgba(0,0,0,0.6) 0%,rgba(0,0,0,0) 100%);
+	opacity: .2;
+	transition: opacity .4s linear;
+	will-change: opacity;
+}
+.tool:hover {
+	opacity: 1;
+}
+.tool-prev {
+	composes: tool;
+	left: 0;
+	transform: rotateY(180deg);
+}
+.tool-next {
+	composes: tool;
+	right: 0;
+}
+.tool--icon {
+	width: 50px;
+	max-width: 100%;
+	height: auto;
+	fill: rgba(255,255,255,.5);
+}
+
 .item {
 	position: absolute;
 	left: 0;
 	top: 0;
 
 	width: 100%;
-	height: 100%;
+	max-width: 500px;
+	height: 0;
+	padding-top: 145.161%;
+	padding-bottom: 140px;
 
 	transition: transform .4s, opacity .2s linear;
+	will-change: transform, opacity;
 }
-
 .item.is-current {
 	z-index: 3;
-	background: hotpink;
 
-	transform: scale(.7);
+	transform: scale(.7) translateY(-30%);
 }
 .item.is-next1 {
 	z-index: 2;
-	background: purple;
 
-	transform: scale(.6) translateX(100%);
+	transform: scale(.6) translateX(100%) translateY(-35%);
 }
 .item.is-prev1 {
 	z-index: 2;
-	background: orange;
 
-	transform: scale(.6) translateX(-100%);
+	transform: scale(.6) translateX(-100%) translateY(-35%);
 }
 .item.is-next2 {
 	z-index: 1;
-	background: purple;
 	opacity: 0;
 
-	transform: scale(.6) translateX(200%);
+	transform: scale(.6) translateX(200%) translateY(-35%);
 }
 .item.is-prev2 {
 	z-index: 1;
-	background: orange;
 	opacity: 0;
 
-	transform: scale(.6) translateX(-200%);
+	transform: scale(.6) translateX(-200%) translateY(-35%);
 }
 
 .item.is-hidden {
 	z-index: 1;
-	background: grey;
 
 	opacity: 0;
 	transform: scale(.1) translateX(0%);
