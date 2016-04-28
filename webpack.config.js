@@ -2,7 +2,7 @@
 
 var path = require('path');
 var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var ExtractTextPlugin = require('@ndelangen/extract-text-webpack-plugin');
 
 module.exports = {
 	devtool: '#source-map',

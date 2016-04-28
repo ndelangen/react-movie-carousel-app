@@ -3,7 +3,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var del = require('del');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var ExtractTextPlugin = require('@ndelangen/extract-text-webpack-plugin');
 
 class CleanPlugin {
 	constructor(options) {
