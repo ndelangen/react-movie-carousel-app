@@ -31,7 +31,8 @@ class Root extends Component {
 				</head>
 				<body className={styles.body}>
 					<Header></Header>
-					<div id='root' dangerouslySetInnerHTML={{__html: this.props.content}} />
+					<div className={styles.content} id='root' dangerouslySetInnerHTML={{__html: this.props.content}} />
+
 					{this.renderEnvironment()}
 					{this.renderInitialState()}
 					{head.script.toComponent()}

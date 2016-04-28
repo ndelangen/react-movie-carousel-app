@@ -22,3 +22,12 @@
 	font-family: 'Source Serif Pro', serif;
 	font-size: 20px;
 }
+
+.content {
+	composes: full;
+}
+.content > div,
+.content > div > div {
+	height: 100%;
+	width: 100%;
+}
