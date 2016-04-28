@@ -40,7 +40,7 @@ class Image extends Component {
 					width={width}
 					height={height} />
 
-				<img src={state.imageUrl} className={styles.image} crossorigin="anonymous" onLoad={loadHandler.bind(this)} style={{width: '100%'}} />
+				<img src={state.imageUrl} className={styles.image} crossOrigin="anonymous" onLoad={loadHandler.bind(this)} style={{width: '100%'}} />
 				<span className={styles.loader}>loading</span>
 
 				<div className={styles.fallback} dangerouslySetInnerHTML={{__html: `
