@@ -22,7 +22,7 @@ module.exports = {
 		filename: 'app.min.js'
 	},
 	plugins: [
-		new ExtractTextPlugin('app.css', {
+		new ExtractTextPlugin('app.min.css', {
 			allChunks: true
 		}),
 		new webpack.optimize.OccurrenceOrderPlugin(),
