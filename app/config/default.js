@@ -1,7 +1,7 @@
 import baseConfig from './base';
 
 require('css-modules-require-hook')({
-  generateScopedName: '[name]__[local]___[hash:base64:5]',
+  generateScopedName: '[name]_[local]_[hash:base64:5]',
 });
 
 const config = {
