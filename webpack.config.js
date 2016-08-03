@@ -5,21 +5,22 @@ var webpack = require('webpack');
 var SplitByPathPlugin = require('webpack-split-by-path');
 
 module.exports = {
-	// devtool: '#source-map',
+	devtool: '#source-map',
 	entry: {
 		app: [
 			'webpack-hot-middleware/client',
 			'./app/index.js'
 		],
-		// vendor:
 	},
 	output: {
 		path: path.join(__dirname, 'dev'),
 		filename: '[name].js',
 		publicPath: 'http://localhost:3000/',
-		chunkFilename: "[name]-[chunkhash].js"
+		chunkFilename: "[name].js",
+		jsonpFunction: 'wpck'
 	},
 	plugins: [
+		new webpack.ProgressPlugin(),
 		new SplitByPathPlugin([
       {
         name: 'vendor',
@@ -28,8 +29,8 @@ module.exports = {
     ], {
       manifest: 'app-entry'
     }),
-		new webpack.optimize.DedupePlugin(),
-		new webpack.optimize.OccurrenceOrderPlugin(),
+		// new webpack.optimize.DedupePlugin(),
+		// new webpack.optimize.OccurrenceOrderPlugin(),
 		new webpack.HotModuleReplacementPlugin(),
 		new webpack.NoErrorsPlugin(),
 		// new webpack.optimize.UglifyJsPlugin({
@@ -74,6 +75,9 @@ module.exports = {
     // "react-dom": "ReactDOM"
   },
 	resolve: {
+		root: [
+	    path.resolve('./app'),
+	  ],
 		extensions: [
 			'',
 			'.js'

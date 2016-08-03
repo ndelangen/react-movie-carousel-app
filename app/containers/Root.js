@@ -33,7 +33,7 @@ class Root extends Component {
 					{head.link.toComponent()}
 					<link href='https://fonts.googleapis.com/css?family=Source+Serif+Pro' rel='stylesheet' type='text/css' />
 					{false || process.env.NODE_ENV ? (
-						<link href="/app.min.css" rel="stylesheet" />
+						<link href="/app.css" rel="stylesheet" />
 					) : null}
 
 				</head>
@@ -55,7 +55,7 @@ class Root extends Component {
 
 					<script src={'/app-entry.js'}></script>
 					<script src={'/vendor.js'}></script>
-					<script src={'/app.js'}></script>
+					<script src={'/app.js'} async></script>
 				</body>
 			</html>
 		);

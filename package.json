@@ -21,9 +21,9 @@
   "license": "ISC",
   "homepage": "",
   "scripts": {
-    "start": "node server",
+    "start": "NODE_ENV=development node server",
     "start-prod": "npm run build && NODE_ENV=production PORT=3000 node server",
-    "build": "NODE_ENV=production webpack --config ./webpack.production.config.js --progress"
+    "build": "NODE_ENV=production webpack --config ./webpack.production.config.js -p --progress"
   },
   "dependencies": {
     "babel-core": "^6.7.5",
@@ -35,28 +35,28 @@
     "express": "^4.13.4",
     "history": "^3.0.0",
     "isomorphic-fetch": "^2.2.1",
-    "react": "^15.0.0",
+    "react": "^15.3.0",
     "react-css-modules": "^3.7.6",
-    "react-dom": "^15.0.0",
+    "react-dom": "^15.3.0",
     "react-helmet": "^3.0.1",
     "react-redux": "^4.4.1",
     "react-router": "^2.0.1",
     "redux": "^3.3.1",
     "redux-thunk": "^2.0.1",
     "style-loader": "^0.13.1",
-    "webpack": "^2.0.6-beta",
-    "webpack-dev-server": "^2.0.0-beta"
+    "webpack": "^2.1.0-beta.20",
+    "webpack-dev-server": "^2.1.0-beta.0"
   },
   "devDependencies": {
-    "@ndelangen/extract-text-webpack-plugin": "^2.0.0",
     "babel-loader": "^6.2.4",
     "babel-plugin-react-transform": "^2.0.2",
     "babel-plugin-transform-object-assign": "^6.5.0",
     "del": "^2.2.0",
+    "extract-text-webpack-plugin": "^2.0.0-beta.3",
     "react-transform-hmr": "^1.0.4",
-    "webpack": "^2.1.0-beta.5",
+    "webpack": "^2.1.0-beta.20",
     "webpack-dev-middleware": "^1.6.1",
-    "webpack-hot-middleware": "^2.10.0",
-    "webpack-split-by-path": "^0.1.0"
+    "webpack-hot-middleware": "^2.12.2",
+    "webpack-split-by-path": "file:/Users/Norbert/Work/Projects/OPEN/me/webpack-split-by-path"
   }
 }

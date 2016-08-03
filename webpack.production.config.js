@@ -3,7 +3,8 @@
 var path = require('path');
 var webpack = require('webpack');
 var del = require('del');
-var ExtractTextPlugin = require('@ndelangen/extract-text-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var SplitByPathPlugin = require('webpack-split-by-path');
 
 class CleanPlugin {
 	constructor(options) {
@@ -16,16 +17,33 @@ class CleanPlugin {
 }
 
 module.exports = {
-	entry: './app/index',
+	entry: {
+		app: './app/index'
+	},
 	output: {
 		path: path.join(__dirname, 'dist'),
-		filename: 'app.min.js'
+		filename: '[name].js',
+		publicPath: 'http://localhost:3000/',
+		chunkFilename: "[name].js"
 	},
 	plugins: [
-		new ExtractTextPlugin('app.min.css', {
+		new webpack.DefinePlugin({
+      'process.env':{
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+		new SplitByPathPlugin([
+      {
+        name: 'vendor',
+        path: path.join(__dirname, 'node_modules')
+      }
+    ], {
+      manifest: 'app-entry'
+    }),
+		new ExtractTextPlugin({
+			filename: 'app.css',
 			allChunks: true
 		}),
-		new webpack.optimize.OccurrenceOrderPlugin(),
 		new CleanPlugin({
 			files: ['dist/*']
 		}),
@@ -41,7 +59,10 @@ module.exports = {
 			{
 				test: /\.css$/,
 				include: path.join(__dirname, 'app'),
-				loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=1&localIdentName=[hash:base64:5]')
+				loader: ExtractTextPlugin.extract({
+					fallbackLoader: 'style',
+					loader: 'css?modules&importLoaders=1&localIdentName=[hash:base64:5]'
+				})
 			},
 			{
 				test: /\.js?$/,

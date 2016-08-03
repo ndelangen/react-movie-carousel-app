@@ -1,17 +1,64 @@
 require('babel-core/register');
 
+global.__ENVIRONMENT__ = process.env.NODE_ENV || 'development';
+
+const chalk = require('chalk');
+
+const startTime = new Date();
+const logTime = (date) => chalk.gray(`[${date.toLocaleDateString()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}]`)
+
+const notify = function(type, data) {
+	switch (type) {
+		case 'script-start':
+			console.info(``);
+			return;
+		case 'server-start':
+			console.info(`${chalk.blue('◉')}  - Server started.               ${logTime(startTime)}`);
+			return;
+		case 'server-ready':
+			console.info(`${chalk.green('◉')}  - Server ready.                 ${logTime(new Date())}`);
+			return;
+		case 'server-down':
+			process.stdout.clearLine();
+			process.stdout.cursorTo(0);
+			console.warn(`${chalk.red('◉')}  - Server shut down.            ${logTime(new Date())}`);
+			return;
+		case 'webpack-start':
+			console.info(`${chalk.blue('◉')}  - Webpack started.              ${logTime(new Date())}`);
+			return;
+		case 'webpack-ready':
+			const time = parseInt(data.match(/[0-9]+/)[0], 10);
+			const colors = ['green', 'cyan', 'blue', 'yellow', 'red'];
+			const colorIndex = Math.floor(Math.max(0, Math.min((time - 3770) / 2000, 4)));
+			const timestamp = chalk[colors[colorIndex]];
+			console.info(`${chalk.green('◉')}  - Webpack completed in ${timestamp(time + 'ms')}   ${logTime(new Date())}`);
+			return;
+		case 'webpack-results':
+			console.log('');
+			console.info(data);
+			console.log('');
+			return;
+		case 'develop-on':
+			console.log('');
+			console.log('🤓  - Happy developing! Open up http://localhost:%s/ in your browser.', port)
+			console.log('');
+			return;
+	}
+};
+
 const path = require('path');
+const Promise = require('bluebird');
+
 const express = require('express');
+
 const webpack = require('webpack');
 const dev = require('webpack-dev-middleware');
 const hot = require('webpack-hot-middleware');
 const config = require('./webpack.config.js');
+const appConfig = require('./app/config/' + global.__ENVIRONMENT__);
 
 const port = process.env.PORT || 3000;
 const server = express();
-global.__ENVIRONMENT__ = process.env.NODE_ENV || 'default';
-
-const appConfig = require('./app/config/' + global.__ENVIRONMENT__);
 
 // Otherwise errors thrown in Promise routines will be silently swallowed.
 // (e.g. any error during rendering the app server-side!)
@@ -23,6 +70,26 @@ process.on('unhandledRejection', (reason, p) => {
 	}
 });
 
+
+function exitHandler(err) {
+	notify('server-down');
+  if (err) {
+		console.error(err.stack);
+	}
+	process.exit();
+}
+
+//do something when app is closing
+// process.on('exit', exitHandler);
+
+//catches ctrl+c event
+process.on('SIGINT', exitHandler);
+
+//catches uncaught exceptions
+process.on('uncaughtException', exitHandler);
+
+
+
 // Short-circuit the browser's annoying favicon request. You can still
 // specify one as long as it doesn't have this exact name and path.
 server.get('/favicon.ico', function(req, res) {
@@ -32,32 +99,69 @@ server.get('/favicon.ico', function(req, res) {
 
 server.use(express.static(path.resolve(__dirname, 'dist')));
 
-if (!process.env.NODE_ENV) {
-	const compiler = webpack(config);
-
-	server.use(dev(compiler, {
-		publicPath: config.output.publicPath,
-		stats: {
-			colors: true,
-			hash: false,
-			timings: true,
-			chunks: false,
-			chunkModules: false,
-			modules: false
-		}
-	}));
-	server.use(hot(compiler));
-}
-
 server.get('*', require('./app').serverMiddleware);
 
-server.listen(port, 'localhost', (err) => {
-	if (err) {
-		console.error(err);
+const serverState = new Promise((resolve, reject) => {
+	notify('server-start');
+	server.listen(port, 'localhost', (err) => {
+		err ? reject() : resolve();
+	});
+});
+
+const compilerState = new Promise((resolve, reject) => {
+	if (process.env.NODE_ENV === 'development') {
+		notify('webpack-start');
+
+		const devOptions = {
+			publicPath: config.output.publicPath,
+			watchOptions: {},
+			quiet: true,
+			noInfo: true,
+			stats: 'errors-only'
+		};
+		const hotOptions = {
+			path: "/__webpack_hmr",
+			timeout: 2000,
+			overlay: true,
+			reload: false,
+			log: false,
+			warn: true
+		};
+		const statOptions = {
+			colors: true,
+			hash: false,
+			assets: true,
+			version: false,
+			cached: false,
+			cachedAssets: false,
+			timings: false,
+			chunks: false,
+			chunkModules: false,
+			entrypoints: false,
+			modules: false
+		};
+
+		const compiler = webpack(config);
+		const devMiddleware = dev(compiler, devOptions);
+		const hotMiddleware = hot(compiler, hotOptions);
+
+		compiler.plugin("done", (stats) => {
+			notify('webpack-results', stats.toString(statOptions));
+			notify('webpack-ready', stats.toString(Object.assign({}, statOptions, { timings: true, assets: false, colors: false })));
+
+			resolve();
+		});
+
+		server.use(devMiddleware);
+		server.use(hotMiddleware);
+	} else {
+		resolve();
 	}
-	console.info('Server ready 👍. Open up http://localhost:%s/ in your browser.', port);
-	if (!process.env.NODE_ENV) {
-		console.info('---');
-		console.info('Webpack building...');
+});
+
+Promise.all([serverState, compilerState]).then((server, compiler) => {
+	notify('server-ready');
+	if (process.env.NODE_ENV === 'development') {
+		notify('develop-on');
 	}
 });
