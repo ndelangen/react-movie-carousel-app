@@ -8,7 +8,7 @@ class Header extends Component {
 	render() {
 		return (
 			<header className={styles.root}>
-				<h1><span className={styles.title}>Universal React Movie-Carousel-App</span> <span className={styles.subtitle}>by Norbert de Langen</span></h1>
+				<h1><span className={styles.title}>Universal React Movie-Carousel-App!!!</span> <span className={styles.subtitle}>by Norbert de Langen</span></h1>
 			</header>
 		);
 	}

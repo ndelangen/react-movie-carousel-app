@@ -15,7 +15,7 @@ module.exports = {
 	output: {
 		path: path.join(__dirname, 'dev'),
 		filename: '[name].js',
-		publicPath: 'http://localhost:3000/',
+		publicPath: 'http://localhost:3000/assets/',
 		chunkFilename: "[name].js",
 		jsonpFunction: 'wpck'
 	},

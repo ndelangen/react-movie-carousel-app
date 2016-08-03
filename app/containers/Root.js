@@ -32,30 +32,24 @@ class Root extends Component {
 					{head.meta.toComponent()}
 					{head.link.toComponent()}
 					<link href='https://fonts.googleapis.com/css?family=Source+Serif+Pro' rel='stylesheet' type='text/css' />
-					{false || process.env.NODE_ENV ? (
+					{__ENVIRONMENT__ === 'production' ? (
 						<link href="/app.css" rel="stylesheet" />
 					) : null}
 
 				</head>
 				<body className={styles.body}>
 					<Header></Header>
-					<div className={styles.content} id='root' dangerouslySetInnerHTML={{__html: this.props.content}} />
 
-					{ false && (
-						<div>
-							<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.1/react.js"></script>
-							<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.2.1/react-dom.js"></script>
-						</div>
-					)}
+					<div className={styles.content} id="root" dangerouslySetInnerHTML={{__html: this.props.content}} />
 
 					{this.renderEnvironment()}
 					{this.renderInitialState()}
 					{head.script.toComponent()}
 					{this.renderSpecialScript()}
 
-					<script src={'/app-entry.js'}></script>
-					<script src={'/vendor.js'}></script>
-					<script src={'/app.js'} async></script>
+					<script src={'/assets/app-entry.js'}></script>
+					<script src={'/assets/vendor.js'}></script>
+					<script src={'/assets/app.js'} async></script>
 				</body>
 			</html>
 		);

@@ -21,8 +21,8 @@
   "license": "ISC",
   "homepage": "",
   "scripts": {
-    "start": "NODE_ENV=development node server",
-    "start-prod": "npm run build && NODE_ENV=production PORT=3000 node server",
+    "start": "NODE_ENV=development node --harmony_destructuring server",
+    "start-prod": "npm run build && NODE_ENV=production PORT=3000 node --harmony_destructuring server",
     "build": "NODE_ENV=production webpack --config ./webpack.production.config.js -p --progress"
   },
   "dependencies": {

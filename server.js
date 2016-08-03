@@ -71,7 +71,7 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 
-function exitHandler(err) {
+const exitHandler = (err) => {
 	notify('server-down');
   if (err) {
 		console.error(err.stack);
@@ -90,17 +90,6 @@ process.on('uncaughtException', exitHandler);
 
 
 
-// Short-circuit the browser's annoying favicon request. You can still
-// specify one as long as it doesn't have this exact name and path.
-server.get('/favicon.ico', function(req, res) {
-	res.writeHead(404, { 'Content-Type': 'image/x-icon' });
-	res.end();
-});
-
-server.use(express.static(path.resolve(__dirname, 'dist')));
-
-server.get('*', require('./app').serverMiddleware);
-
 const serverState = new Promise((resolve, reject) => {
 	notify('server-start');
 	server.listen(port, 'localhost', (err) => {
@@ -114,7 +103,6 @@ const compilerState = new Promise((resolve, reject) => {
 
 		const devOptions = {
 			publicPath: config.output.publicPath,
-			watchOptions: {},
 			quiet: true,
 			noInfo: true,
 			stats: 'errors-only'
@@ -158,6 +146,19 @@ const compilerState = new Promise((resolve, reject) => {
 		resolve();
 	}
 });
+
+
+// Short-circuit the browser's annoying favicon request. You can still
+// specify one as long as it doesn't have this exact name and path.
+server.get('/favicon.ico', (req, res) => {
+	res.writeHead(404, { 'Content-Type': 'image/x-icon' });
+	res.end();
+});
+
+server.use(express.static(path.resolve(__dirname, 'dist')));
+
+const { serverMiddleware } = require('./app/index');
+server.get('*', serverMiddleware);
 
 Promise.all([serverState, compilerState]).then((server, compiler) => {
 	notify('server-ready');

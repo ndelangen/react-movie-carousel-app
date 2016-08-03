@@ -1,3 +1,5 @@
+import 'isomorphic-fetch';
+
 export const MOVIES_INVALID = 'MOVIES_INVALID';
 export const MOVIES_FETCHING = 'MOVIES_FETCHING';
 export const MOVIES_FETCHED = 'MOVIES_FETCHED';
