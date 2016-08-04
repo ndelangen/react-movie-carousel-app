@@ -60,7 +60,7 @@ class Card extends Component {
 				<div className={styles.content} style={{color: state.textColor}}>
 					<h1 className={styles.title}>{item.title}</h1>
 					<div className={styles.genre}>{item.genre}</div>
-					<div className={styles.rating}>IMDB score: {item.imdb}</div>
+					<div className={styles.rating}>IMDB ratings: {item.imdb}</div>
 					<div className={styles.group}>{item.group}</div>
 				</div>
 				<div className={styles.media}>

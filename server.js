@@ -3,6 +3,7 @@ require('babel-core/register');
 global.__ENVIRONMENT__ = process.env.NODE_ENV || 'development';
 
 const chalk = require('chalk');
+const chokidar = require('chokidar');
 
 const startTime = new Date();
 const logTime = (date) => chalk.gray(`[${date.toLocaleDateString()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}]`)
@@ -17,6 +18,12 @@ const notify = function(type, data) {
 			return;
 		case 'server-ready':
 			console.info(`${chalk.green('◉')}  - Server ready.                 ${logTime(new Date())}`);
+			return;
+		case 'server-hmr-app':
+			console.info(`${chalk.green('◉')}  - Server HMR: ${chalk.cyan('/app/*')}            ${logTime(new Date())}`);
+			return;
+		case 'server-hmr-node':
+			console.info(`${chalk.green('◉')}  - Server HMR: ${chalk.cyan('/node_modules/*')}   ${logTime(new Date())}`);
 			return;
 		case 'server-down':
 			process.stdout.clearLine();
@@ -89,11 +96,21 @@ process.on('SIGINT', exitHandler);
 process.on('uncaughtException', exitHandler);
 
 
+const moduleMatchExpressions = {
+	node: new RegExp('/node_modules/'),
+	app: new RegExp('/app/'),
+}
+const isNodeModule = id => id.match(moduleMatchExpressions.node);
+const isAppModule = id => id.match(moduleMatchExpressions.app);
+const deleteFromCacheAndReturn = id => {
+	delete require.cache[id];
+	return id;
+};
 
 const serverState = new Promise((resolve, reject) => {
 	notify('server-start');
-	server.listen(port, 'localhost', (err) => {
-		err ? reject() : resolve();
+	server.listen(port, 'localhost', (error) => {
+		error ? reject(error) : resolve(server);
 	});
 });
 
@@ -109,6 +126,7 @@ const compilerState = new Promise((resolve, reject) => {
 		};
 		const hotOptions = {
 			path: "/__webpack_hmr",
+			publicPath: config.output.publicPath,
 			timeout: 2000,
 			overlay: true,
 			reload: false,
@@ -137,6 +155,14 @@ const compilerState = new Promise((resolve, reject) => {
 			notify('webpack-results', stats.toString(statOptions));
 			notify('webpack-ready', stats.toString(Object.assign({}, statOptions, { timings: true, assets: false, colors: false })));
 
+			const serverHotModules = Object.keys(require.cache)
+				.filter(isAppModule)
+				.map(deleteFromCacheAndReturn);
+
+			if (serverHotModules.length) {
+				notify('server-hmr-app', serverHotModules);
+			}
+
 			resolve();
 		});
 
@@ -157,12 +183,36 @@ server.get('/favicon.ico', (req, res) => {
 
 server.use(express.static(path.resolve(__dirname, 'dist')));
 
-const { serverMiddleware } = require('./app/index');
-server.get('*', serverMiddleware);
-
-Promise.all([serverState, compilerState]).then((server, compiler) => {
+Promise.all([serverState, compilerState]).then((x, compiler) => {
 	notify('server-ready');
+
+	server.get('*', (req, res, next) => {
+		console.log(`${chalk.blue('☆')} ${req.url}`);
+
+		return require('./app/index').serverMiddleware(req, res, next);
+	});
+
+
 	if (process.env.NODE_ENV === 'development') {
 		notify('develop-on');
+
+		const watcher = chokidar.watch('./node_modules/**/package.json', {
+			depth: 2,
+			followSymlinks: true,
+			ignoreInitial: true,
+			ignorePermissionErrors: true
+		});
+		watcher.on('ready', () => {
+		  watcher.on('all', () => {
+				const serverHotModules = Object.keys(require.cache)
+					.filter(isNodeModule)
+					.map(deleteFromCacheAndReturn);
+
+				if (serverHotModules.length) {
+					notify('server-hmr-node', serverHotModules);
+				}
+		  });
+		});
+
 	}
 });

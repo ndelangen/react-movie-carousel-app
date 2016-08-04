@@ -18,7 +18,7 @@ class Root extends Component {
 	}
 
 	renderSpecialScript() {
-		const innerHtml = `console.log('works some more')`;
+		const innerHtml = `console.log('works some more, amazing!')`;
 		return <script dangerouslySetInnerHTML={{__html: innerHtml}} />
 	}
 

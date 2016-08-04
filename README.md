@@ -9,8 +9,29 @@ I've used a starter-kit to get started: [universal react by DominicTobias](https
 
 WORKLOG:
 
-ADD HMR support for IE:
-https://github.com/glenjamin/webpack-hot-middleware/issues/53
+✔︎ Hot Module Reloading serverside
+  ✔︎ node_modules
+  ✔︎ app
+
+✔︎ Hot Module Reloading clientside
+  ✔︎ normal browsers
+  ✔︎ css
+  IE (https://github.com/glenjamin/webpack-hot-middleware/issues/53)
+
+✔︎ debugger statement support
+
+✔︎ great sourcemaps
+
+✔︎ debug-able css (no inline)
+✔︎ css-modules
+imports
+variables
+
+FIX: single hot-update.json 404
+
+move app serverMiddleware to server.js
+
+proper logger with levels
 
 Webpack Progress in dev, full log with --display-modules --display-reasons in production
 
