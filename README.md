@@ -27,11 +27,17 @@ WORKLOG:
 imports
 variables
 
+port should become global
+
 FIX: single hot-update.json 404
 
 move app serverMiddleware to server.js
+split server.js into only server running related things.
+
+chunked / streaming response from server
 
 proper logger with levels
+log to file
 
 Webpack Progress in dev, full log with --display-modules --display-reasons in production
 

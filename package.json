@@ -21,6 +21,7 @@
   "license": "ISC",
   "homepage": "",
   "scripts": {
+    "development": "./scripts/development.js",
     "start": "NODE_ENV=development node --harmony_destructuring server",
     "start-prod": "npm run build && NODE_ENV=production PORT=3000 node --harmony_destructuring server",
     "build": "NODE_ENV=production webpack --config ./webpack.production.config.js -p --progress"
@@ -37,6 +38,7 @@
     "express": "^4.13.4",
     "history": "^3.0.0",
     "isomorphic-fetch": "^2.2.1",
+    "minimist": "^1.2.0",
     "react": "^15.3.0",
     "react-css-modules": "^3.7.6",
     "react-dom": "^15.3.0",

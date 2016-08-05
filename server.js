@@ -1,7 +1,3 @@
-require('babel-core/register');
-
-global.__ENVIRONMENT__ = process.env.NODE_ENV || 'development';
-
 const chalk = require('chalk');
 const chokidar = require('chokidar');
 
