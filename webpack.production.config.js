@@ -51,6 +51,9 @@ module.exports = {
 			compressor: {
 				warnings: false,
 				screw_ie8: true
+			},
+			output: {
+				comments: false
 			}
 		})
 	],

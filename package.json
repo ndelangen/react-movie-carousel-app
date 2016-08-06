@@ -24,7 +24,8 @@
     "development": "./scripts/development.js",
     "start": "NODE_ENV=development node --harmony_destructuring server",
     "start-prod": "npm run build && NODE_ENV=production PORT=3000 node --harmony_destructuring server",
-    "build": "NODE_ENV=production webpack --config ./webpack.production.config.js -p --progress"
+    "build": "NODE_ENV=production webpack --config ./webpack.production.config.js -p --progress",
+    "build-server": "NODE_ENV=development webpack --config ./webpack.server.config.js --progress"
   },
   "dependencies": {
     "babel-core": "^6.7.5",
@@ -38,6 +39,7 @@
     "express": "^4.13.4",
     "history": "^3.0.0",
     "isomorphic-fetch": "^2.2.1",
+    "json-loader": "^0.5.4",
     "minimist": "^1.2.0",
     "react": "^15.3.0",
     "react-css-modules": "^3.7.6",
