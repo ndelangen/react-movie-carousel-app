@@ -2,15 +2,33 @@ const chalk = require('chalk');
 const readline = require('readline');
 const port = global.__PORT__ || process.env.PORT || 3000;
 
+const { width: terminalWidth } = require('window-size');
+const stringPadding = Array(terminalWidth).fill(' ').join('');
+
 const startTime = new Date();
 const logTime = (date) => chalk.gray(`[${date.toLocaleDateString()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}]`)
 
-const renderProgressBar = (percentage) => {
-	const length = 10;
-	const complete = Array(Math.floor(length * percentage)).fill('◼︎').join('');
-	const incomplete = Array(Math.ceil(length - (length * percentage))).fill('◼︎').join('');
-	return `${chalk.green(complete)}${chalk.gray(incomplete)}`;
-}
+const renderProgressBar = ({ percentage, progress, activity }) => {
+	const length = terminalWidth - 24;
+
+	const string = `${renderPercentage(percentage)} ${progress} ${activity}${stringPadding}`;
+	const completeLength = Math.ceil(length * percentage);
+
+	const complete = string.substring(0, completeLength);
+	const incomplete = string.substring(completeLength, length);
+	return `${chalk.bgGreen.black(complete)}${chalk.bgBlack.white(incomplete)}`;
+};
+
+
+const renderStage = ({stage}, length = 10) => {
+	if (stage.length < length) {
+		return stage.concat(Array(length).fill(' ').join('')).substr(0, length);
+	} else {
+		return stage.substr(0, 9).concat('…');
+	}
+};
+
+const renderPercentage = percentage => `${Math.ceil(100 * percentage)}%`;
 
 const removeWebpackProgress = (data) => {
 	Object.keys(data).forEach(() => {
@@ -23,13 +41,13 @@ const logWebpackProgress = (data) => {
 		const item = data[key];
 		switch (item.stage) {
 			case 'starting':
-				console.info(`${chalk.blue('◉')}  - starting compiling ${key}`);
+				console.info(`${chalk.blue('◉')}  - ${key} ${renderStage(item)} ${renderProgressBar(item)}`);
 				return;
 			case 'compiling':
-				console.info(`${chalk.yellow('◉')}  - compiling ${key} ${renderProgressBar(item.percentage)}`);
+				console.info(`${chalk.yellow('◉')}  - ${key} ${renderStage(item)} ${renderProgressBar(item)}`);
 				return;
 			case 'building modules':
-				console.info(`${chalk.yellow('◉')}  - building ${key}: ${renderProgressBar(item.percentage)}`);
+				console.info(`${chalk.yellow('◉')}  - ${key} ${renderStage(item)} ${renderProgressBar(item)}`);
 				return;
 			case 'sealing':
 			case 'optimizing':
@@ -54,11 +72,10 @@ const logWebpackProgress = (data) => {
 			case 'chunk asset optimization':
 			case 'asset optimization':
 			case 'emitting':
-				console.info(`${chalk.yellow('◉')}  - optimizing ${key}: ${renderProgressBar(item.percentage)}`);
-				// console.info(`${chalk.yellow('◉')}  - optimizing ${key}: ${item.percentage}`);
+				console.info(`${chalk.blue('◉')}  - ${key} ${renderStage(item)} ${renderProgressBar(item)}`);
 				return;
 			case '':
-				console.info(`${chalk.green('◉')}  - finished ${key}: ${renderProgressBar(item.percentage)}`);
+				console.info(`${chalk.green('◉')}  - finished ${key}`);
 				return;
 			default:
 				console.log('?');
@@ -105,11 +122,10 @@ module.exports = function cliNotify (type, data) {
 			console.info(`${chalk.blue('◉')}  - Webpack client started.       ${logTime(new Date())}`);
 			return;
 		case 'webpack-ready':
-			const time = parseInt(data.match(/[0-9]+/)[0], 10);
 			const colors = ['green', 'cyan', 'blue', 'yellow', 'red'];
-			const colorIndex = Math.floor(Math.max(0, Math.min((time - 3770) / 2000, 4)));
+			const colorIndex = Math.floor(Math.max(0, Math.min((data - 3770) / 2000, 4)));
 			const timestamp = chalk[colors[colorIndex]];
-			console.info(`${chalk.green('◉')}  - Webpack completed in ${timestamp(time + 'ms')}   ${logTime(new Date())}`);
+			console.info(`${chalk.green('◉')}  - Webpack completed in ${timestamp(data + 'ms')}   ${logTime(new Date())}`);
 			return;
 		case 'webpack-results':
 			console.log('');

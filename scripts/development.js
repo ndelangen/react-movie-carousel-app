@@ -2,16 +2,15 @@
 require('babel-core/register');
 
 global.__ENVIRONMENT__ = process.env.NODE_ENV = 'development';
-global.__PORT__ = process.env.PORT = 3000;
+global.__PORT__ = process.env.PORT || 3000;
 
 const minimist = require('minimist');
 const chokidar = require('chokidar');
+const Promise = require('bluebird');
 
 const scriptArguments = minimist(process.argv.slice(2));
 
 const appConfig = require('../app/config/' + global.__ENVIRONMENT__);
-
-// require('css-modules-require-hook')(appConfig.cssModules);
 
 const webServer = require('../server/main');
 const notify = require('../server/cli-notifications');
@@ -28,7 +27,6 @@ const deleteFromCacheAndReturn = id => {
 	delete require.cache[id];
 	return id;
 };
-
 
 const output = {
   client: {
@@ -48,9 +46,9 @@ const output = {
 };
 
 const statOptions = {
-  colors: true,
+  colors: false,
   hash: false,
-  assets: true,
+  assets: false,
   version: false,
   cached: false,
   cachedAssets: false,
@@ -58,57 +56,42 @@ const statOptions = {
   chunks: false,
   chunkModules: false,
   entrypoints: false,
-  modules: false
+  modules: false,
+	errorDetails: true,
 };
-
+const resultsOptions = Object.assign({}, statOptions, { colors: true, assets: true });
+const timeOptions = Object.assign({}, statOptions, { timings: true });
 
 notify('webpack-start', output);
 
-var ProgressPlugin = require('webpack/lib/ProgressPlugin');
-
 const serverCompiler = require('../server/server-compiler');
-serverCompiler.compiler.apply(new ProgressPlugin((percentage, stage, progress, activity, path) => {
+serverCompiler.progress((percentage, stage, progress, activity, path) => {
   output.server = { percentage, stage, progress, activity, path };
   notify('webpack-progress', output);
-}));
+});
 serverCompiler.compiler.watch({}, (error, stats) => {
-  clientCompiler.ready.then(() => {
-    notify('webpack-results', stats.toString(statOptions));
-    notify('webpack-ready', stats.toString(Object.assign({}, statOptions, { timings: true, assets: false, colors: false })));
+  const serverHotModules = Object.keys(require.cache)
+    .filter(isDevModule)
+    .map(deleteFromCacheAndReturn);
 
-    const serverHotModules = Object.keys(require.cache)
-      .filter(isDevModule)
-      .map(deleteFromCacheAndReturn);
-
-    if (serverHotModules.length) {
-      notify('server-hmr-app', serverHotModules);
-    }
-  });
+  if (serverHotModules.length) {
+    notify('server-hmr-app', serverHotModules);
+  }
 });
 
 const clientCompiler = require('../server/client-compiler');
-clientCompiler.compiler.apply(new ProgressPlugin((percentage, stage, progress, activity, path) => {
+clientCompiler.progress((percentage, stage, progress, activity, path) => {
   output.client = { percentage, stage, progress, activity, path };
   notify('webpack-progress', output);
-}));
-clientCompiler.compiler.plugin("done", (stats) => {
-  serverCompiler.ready.then(() => {
-    notify('webpack-results', stats.toString(statOptions));
-    notify('webpack-ready', stats.toString(Object.assign({}, statOptions, { timings: true, assets: false, colors: false })));
-
-    const serverHotModules = Object.keys(require.cache)
-      .filter(isAppModule)
-      .map(deleteFromCacheAndReturn);
-
-    if (serverHotModules.length) {
-      notify('server-hmr-app', serverHotModules);
-    }
-  });
 });
 
+Promise.all([clientCompiler.ready, serverCompiler.ready]).spread((clientStats, serverStats) => {
+	notify('webpack-results', clientStats.toString(resultsOptions));
+	notify('webpack-ready', clientStats.toJson(timeOptions).time);
 
-const developmentMiddleware = require('../server/dev-middleware');
-const regularMiddleware = require('../server/routes');
+	notify('webpack-results', serverStats.toString(resultsOptions));
+	notify('webpack-ready', serverStats.toJson(timeOptions).time);
+});
 
 
 const watchNodeModules = () => {
@@ -132,21 +115,18 @@ const watchNodeModules = () => {
     });
 };
 
+const developmentMiddleware = require('../server/dev-middleware');
+const regularMiddleware = require('../server/routes');
 
 Promise.all([webServer.ready, clientCompiler.ready, serverCompiler.ready]).then(() => {
   notify('server-ready');
   notify('develop-on');
 
   webServer.server.use(developmentMiddleware.middleware);
-  // TODO figure this out
-  // server.use(express.static(path.resolve(__dirname, 'dist')));
-  // server.use(express.static(path.resolve(__dirname, 'dev')));
 
-  // webServer.server.get('/', regularMiddleware.middleware);
+  webServer.server.use(regularMiddleware.middleware);
 
-
-  webServer.server.get('*', (req, res, next) => {
-		// console.log(require('../dev/server'));
+  webServer.server.use((req, res, next) => {
 		return require('../dev/server').serverMiddleware(req, res, next);
 	});
 
