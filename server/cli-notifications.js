@@ -8,15 +8,14 @@ const stringPadding = Array(terminalWidth).fill(' ').join('');
 const startTime = new Date();
 const logTime = (date) => chalk.gray(`[${date.toLocaleDateString()} - ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}]`)
 
+const progressBarWidth = terminalWidth - 24;
 const renderProgressBar = ({ percentage, progress, activity }) => {
-	const length = terminalWidth - 24;
-
 	const string = `${renderPercentage(percentage)} ${progress} ${activity}${stringPadding}`;
-	const completeLength = Math.ceil(length * percentage);
+	const completeLength = Math.ceil(progressBarWidth * percentage);
 
 	const complete = string.substring(0, completeLength);
-	const incomplete = string.substring(completeLength, length);
-	return `${chalk.bgGreen.black(complete)}${chalk.bgBlack.white(incomplete)}`;
+	const incomplete = string.substring(completeLength, progressBarWidth);
+	return `${chalk.bgYellow.black(complete)}${chalk.bgWhite.black(incomplete)}`;
 };
 
 
@@ -33,8 +32,8 @@ const renderPercentage = percentage => `${Math.ceil(100 * percentage)}%`;
 const removeWebpackProgress = (data) => {
 	Object.keys(data).forEach(() => {
 		readline.moveCursor(process.stdout, 0, -1);
-		readline.clearScreenDown(process.stdout);
 	});
+  readline.clearScreenDown(process.stdout);
 };
 const logWebpackProgress = (data) => {
 	Object.keys(data).forEach((key) => {
@@ -78,7 +77,7 @@ const logWebpackProgress = (data) => {
 				console.info(`${chalk.green('◉')}  - finished ${key}`);
 				return;
 			default:
-				console.log('?');
+				console.log(`? ${key}`);
 		}
 	});
 };
