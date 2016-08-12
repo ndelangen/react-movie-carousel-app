@@ -33,7 +33,7 @@ class Root extends Component {
 					{head.link.toComponent()}
 					<link href='https://fonts.googleapis.com/css?family=Source+Serif+Pro' rel='stylesheet' type='text/css' />
 					{__ENVIRONMENT__ === 'production' ? (
-						<link href="/app.css" rel="stylesheet" />
+						<link href="/assets/app.css" rel="stylesheet" />
 					) : null}
 
 				</head>
@@ -55,6 +55,5 @@ class Root extends Component {
 		);
 	}
 }
-// <script src={!process.env.NODE_ENV ? '/vendor.js' : '/vendor.min.js'}></script>
 
 export default Root;

@@ -17,6 +17,7 @@ const statOptionsBase = {
   assets: false,
   version: false,
   cached: false,
+  children: false,
   cachedAssets: false,
   timings: false,
   chunks: false,
@@ -28,6 +29,7 @@ const statOptionsBase = {
 const resultsOptions = Object.assign({}, statOptionsBase, { colors: true, assets: true });
 const timeOptions = Object.assign({}, statOptionsBase, { timings: true });
 
+const noCallback = () => {};
 
 const run = ( list ) => {
   const output = list.reduce((acc, { compiler }) => {
@@ -44,10 +46,10 @@ const run = ( list ) => {
       });
     }
     if (options.watch) {
-      compiler.compiler.watch({}, options.watchCallback);
+      compiler.compiler.watch({}, options.watchCallback || noCallback);
     }
     if (options.run) {
-      compiler.compiler.run({}, options.runCallback);
+      compiler.compiler.run(options.runCallback || noCallback);
     }
     return compiler;
   });
@@ -59,9 +61,8 @@ const run = ( list ) => {
   }));
 
   return results;
-
 };
 
 module.exports = {
-  run
-}
+  run,
+};

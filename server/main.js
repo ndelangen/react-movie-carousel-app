@@ -1,12 +1,10 @@
-const path = require('path');
 const express = require('express');
 const Promise = require('bluebird');
 
 const notify = require('./cli-notifications');
+const port = global.__PORT__;
 
-const port = process.env.PORT || 3000;
 const server = express();
-
 
 const isListening = new Promise((resolve, reject) => {
 	notify('server-start');
@@ -15,8 +13,7 @@ const isListening = new Promise((resolve, reject) => {
 	});
 });
 
-
 module.exports = {
   server,
-  ready: isListening
+  ready: isListening,
 };

@@ -1,5 +1,5 @@
 const cssModules = {
-  generateScopedName: '[name]_[local]_[hash:base64:5]',
+  generateScopedName: '[path][name]-[local]_[hash:base64:5]',
 };
 
 const config = {
@@ -7,4 +7,7 @@ const config = {
   cssModules,
 };
 
-module.exports = Object.assign({}, require('./base'), config);
+module.exports = {
+  ...require('./base'),
+  ...config,
+};

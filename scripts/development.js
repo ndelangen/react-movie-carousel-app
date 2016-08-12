@@ -10,6 +10,10 @@ const Promise = require('bluebird');
 
 const scriptArguments = minimist(process.argv.slice(2));
 
+const webServer = require('../server/main');
+const notify = require('../server/cli-notifications');
+const webpackRunner = require('../server/webpack-runner');
+
 const moduleMatchExpressions = {
   node: new RegExp('/node_modules/'),
   app: new RegExp('/app/'),
@@ -20,20 +24,20 @@ const isNodeModule = id => id.match(moduleMatchExpressions.node);
 const isAppModule = id => id.match(moduleMatchExpressions.app);
 const isDevModule = id => id.match(moduleMatchExpressions.dev);
 const deleteFromCacheAndReturn = id => {
-	delete require.cache[id];
-	return id;
+  delete require.cache[id];
+  return id;
 };
 
 const appConfig = require('../app/config/' + global.__ENVIRONMENT__);
 
-const onAppChange = (error, stats) => {
+const onAppChange = () => {
   const serverHotModules = Object.keys(require.cache)
     .filter(isDevModule)
     .map(deleteFromCacheAndReturn);
 
   if (serverHotModules.length) {
     notify('server-hmr-app', serverHotModules);
-		require('../dev/server'); // reload it
+    require('../dev/server'); // reload it
   }
 };
 const onNodeModulesChange = () => {
@@ -46,17 +50,12 @@ const onNodeModulesChange = () => {
   }
 };
 
-
-const webServer = require('../server/main');
-const notify = require('../server/cli-notifications');
-const webpackRunner = require('../server/webpack-runner');
-
 const webpackCompilers = webpackRunner.run([
-  { 
+  {
     options: { progress: true },
     compiler: require('../server/client-compiler'),
   },
-  { 
+  {
     options: { progress: true, watch: true, watchCallback: onAppChange },
     compiler: require('../server/server-compiler'),
   },
@@ -72,7 +71,7 @@ const watchNodeModules = () => {
 
   chokidar
     .watch('./node_modules/**/package.json', options)
-    .on('all', onNodeModulesChange)
+    .on('all', onNodeModulesChange);
 };
 
 const developmentMiddleware = require('../server/dev-middleware');
@@ -87,8 +86,8 @@ Promise.all(webpackCompilers.map(c => c.ready).concat([webServer.ready])).then((
   webServer.server.use(regularMiddleware.middleware);
 
   webServer.server.use((req, res, next) => {
-		return require('../dev/server').serverMiddleware(req, res, next);
-	});
+    return require('../build/server').serverMiddleware(req, res, next);
+  });
 
   watchNodeModules();
 });
