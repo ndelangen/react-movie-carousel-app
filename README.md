@@ -29,7 +29,7 @@ variables
 
 ✔︎ port should become global
 
-FIX: single hot-update.json 404
+✔︎ FIX: single hot-update.json 404
 
 move app serverMiddleware to server.js
 split server.js into only server running related things.
@@ -48,15 +48,32 @@ log to file
 
 Webpack Progress in dev, full log with --display-modules --display-reasons in production
 
-eslint
+✔︎ Use react production version
 
-move script logic to actual scripts
+globals into webpack defineplugin
+
+replace fake-style-loader
+
+auto camelcase css-modules
+
+✔︎ eslint
+
+dependencies grapher
+
+statistics of appsize
+statistics of app performance
+
+use webpack hash to version assets
+
+investigate why/if a entry chunk (manifest-file) is a good idea
+
+✔︎ move script logic to actual scripts
 npm run install
 npm run test:<suite> [*]
 npm run analyze / npm run report
 npm run build
-npm run prod / npm run production
-npm run dev
+✔︎ npm run prod / npm run production
+✔︎ npm run dev
 
 npm start -> install and wizard to choose production | development
 
