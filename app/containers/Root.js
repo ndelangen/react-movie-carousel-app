@@ -47,7 +47,6 @@ class Root extends Component {
 					{head.script.toComponent()}
 					{this.renderSpecialScript()}
 
-					<script src={'/assets/app-entry.js'}></script>
 					<script src={'/assets/vendor.js'}></script>
 					<script src={'/assets/app.js'} async></script>
 				</body>
@@ -55,5 +54,6 @@ class Root extends Component {
 		);
 	}
 }
+					// <script src={'/assets/app-entry.js'}></script>
 
 export default Root;

@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const Promise = require('bluebird');
 const ProgressPlugin = require('webpack/lib/ProgressPlugin');
 
-const config = require('../webpack.client.config.js');
+const config = require('../webpack.client-test.config.js');
 
 const compiler = webpack(config);
 const hasCompiled = new Promise(resolve => compiler.plugin("done", resolve));
