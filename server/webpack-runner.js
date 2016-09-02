@@ -26,6 +26,7 @@ const statOptionsBase = {
   modules: false,
   errorDetails: true,
 };
+const errorOptions = Object.assign({}, statOptionsBase, { errorDetails: true });
 const resultsOptions = Object.assign({}, statOptionsBase, { colors: true, assets: true });
 const timeOptions = Object.assign({}, statOptionsBase, { timings: true });
 
@@ -54,9 +55,17 @@ const run = ( list ) => {
     return compiler;
   });
 
+  results.forEach(c => c.compiler.plugin('done', (stats) => {
+    const { errors, warnings } = stats.toJson(errorOptions);
+    if (errors.length || warnings.length) {
+      notify('webpack-problems', { errors, warnings });
+    } else {
+      notify('webpack-results', stats.toString(resultsOptions));
+    }
+
+  }));
 
   Promise.all(results.map(c => c.ready)).then(list => list.forEach(item => {
-    notify('webpack-results', item.toString(resultsOptions));
     notify('webpack-ready', item.toJson(timeOptions).time);
   }));
 

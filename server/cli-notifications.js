@@ -131,6 +131,17 @@ module.exports = function cliNotify (type, data) {
 			console.info(data);
 			console.log('');
 			return;
+		case 'webpack-problems':
+			console.log('');
+			if (data.errors) {
+				data.errors.forEach((item) => console.log(item));
+				console.log('');
+			}
+			if (data.warnings) {
+				data.warnings.forEach((item) => console.log(item));
+				console.log('');
+			}
+			return;
 		case 'develop-on':
 			console.log('');
 			console.log('🤓  - Happy developing! Open up http://localhost:%s/ in your browser.', port)
