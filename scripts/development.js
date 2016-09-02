@@ -37,7 +37,7 @@ const onAppChange = () => {
 
   if (serverHotModules.length) {
     notify('server-hmr-app', serverHotModules);
-    require('../dev/server'); // reload it
+    require('../build/server'); // reload it
   }
 };
 const onNodeModulesChange = () => {
