@@ -26,7 +26,8 @@
     "start": "NODE_ENV=development node --harmony_destructuring server",
     "start-prod": "npm run build && NODE_ENV=production PORT=3000 node --harmony_destructuring server",
     "build": "NODE_ENV=production webpack --config ./webpack.production.config.js -p --progress",
-    "build-server": "NODE_ENV=development webpack --config ./webpack.server.config.js --progress"
+    "build-server": "NODE_ENV=development webpack --config ./webpack.server.config.js --progress",
+    "reactcards": "reactcards -p 8080 -e ./cards/index.js -c ./webpack.cards.config.js"
   },
   "dependencies": {
     "babel-core": "^6.7.5",
@@ -74,5 +75,8 @@
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.12.2",
     "webpack-split-by-path": "0.1.0-beta.1"
+  },
+  "optionalDependencies": {
+    "reactcards": "^0.4.0"
   }
 }
