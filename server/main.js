@@ -7,10 +7,14 @@ const port = global.__PORT__;
 const server = express();
 
 const isListening = new Promise((resolve, reject) => {
-	notify('server-start');
-	server.listen(port, 'localhost', (error) => {
-		error ? reject(error) : resolve(server);
-	});
+  notify('server-start');
+  server.listen(port, 'localhost', (error) => {
+    if (error) {
+      reject(error);
+    } else {
+      resolve(server);
+    }
+  });
 });
 
 module.exports = {
