@@ -63,7 +63,7 @@
     "del": "^2.2.0",
     "eslint": "^3.9.1",
     "eslint-config-eslint": "^3.0.0",
-    "eslint-plugin-babel": "^4.0.1",
+    "eslint-plugin-babel": "^4.1.0",
     "eslint-plugin-import": "^2.1.0",
     "eslint-plugin-lodash": "^2.1.7",
     "eslint-plugin-node": "3.0.3",
