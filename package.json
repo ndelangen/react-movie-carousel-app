@@ -72,7 +72,7 @@
     "react-transform-hmr": "^1.0.4",
     "webpack": "^2.1.0-beta.20",
     "webpack-dev-middleware": "^1.6.1",
-    "webpack-hot-middleware": "^2.12.2",
+    "webpack-hot-middleware": "^2.18.1",
     "webpack-split-by-path": "0.1.0"
   }
 }
