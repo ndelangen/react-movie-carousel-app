@@ -40,7 +40,7 @@
     "fake-style-loader": "^1.0.1",
     "history": "^4.4.0",
     "isomorphic-fetch": "^2.2.1",
-    "json-loader": "^0.5.4",
+    "json-loader": "^0.5.6",
     "minimist": "^1.2.0",
     "react": "^15.3.0",
     "react-css-modules": "^3.7.6",
