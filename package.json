@@ -35,7 +35,7 @@
     "babel-preset-stage-0": "^6.3.13",
     "bluebird": "^3.4.1",
     "chokidar": "^1.6.0",
-    "css-loader": "^0.25.0",
+    "css-loader": "^2.0.2",
     "express": "^4.13.4",
     "fake-style-loader": "^1.0.1",
     "history": "^4.4.0",
