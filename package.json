@@ -67,7 +67,7 @@
     "eslint-plugin-import": "^2.1.0",
     "eslint-plugin-lodash": "^2.1.7",
     "eslint-plugin-node": "4.2.0",
-    "eslint-plugin-react": "6.10.1",
+    "eslint-plugin-react": "7.15.0",
     "extract-text-webpack-plugin": "^2.0.0-beta.3",
     "react-transform-hmr": "^1.0.4",
     "webpack": "^2.1.0-beta.20",
